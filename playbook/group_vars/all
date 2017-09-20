@@ -1,0 +1,62 @@
+---
+# Server Timzone + Locale
+# timezone: Europe/Berlin
+# locale: en_US.UTF-8
+timezone: Asia/Tokyo
+locale: ja_JP.UTF-8
+
+# Swap
+# Uncommend here and in /roles/common/tasks/main.yml
+swap_enabled: true
+swap_file_path: /swapfile
+swap_file_size_kb: 1024
+
+rbenv_ruby_version: 2.3.4
+rbenv_user: ubuntu
+
+# General settings
+# deploy_dir: /home/deploy/
+deploy_dir: /var/www/
+#deploy_user: deploy
+deploy_user: ubuntu
+deploy_password: deploy
+
+deploy_app_name: symptom-interview
+# deploy_server_hostname: ubuntu.awsdev
+deploy_server_hostname: 0.0.0.0
+
+# Nginx
+nginx_https_enabled: false
+
+# Certbot
+certbot_url: https://dl.eff.org/certbot-auto
+certbot_dir: /opt/certbot
+# certbot_email: SET_EMAIL_HERE
+certbot_email: dslika.jp@gmail.com
+
+# Authorized Hosts
+# This copies your local public key to the remote machine
+# for passwordless login. Modify this!
+ssh_public_key_files:
+  - /Users/dslika/.ssh/id_rsa.pub
+
+# MySQL
+mysql_root_db_password: dslika
+mysql_app_db_password: dslika
+
+# Postgres
+postgre_version: 9.6
+postgre_dbuser: symptom-interview
+postgre_dbpassword: dslika
+
+# Rails
+# rails_secret_key_base: SET_RAILS_SECRET_KEY_BASE_HERE
+rails_secret_key_base: f8bb0e82e50c25a000e043b0125f79e3d4934387d0a0d96fa624bdad226511b7dbcd62bc50e4c8539b5dcf6cd6c697f456c1a027dcdcbfcd22166d9bbdc313f9
+puma_workers: 2
+puma_threads: 4,16
+
+# Elasticsearch
+elasticsearch_version: 5.4.2
+
+# Monit
+monit_sidekiq_enabled: true

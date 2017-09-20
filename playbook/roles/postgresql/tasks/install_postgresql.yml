@@ -1,0 +1,44 @@
+---
+- name: debian | add pg keys
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc id=ACCC4CF8 state=present
+  become: yes
+
+- name: debian | add postgres repositories
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main' state=present update_cache=yes
+  become: yes
+
+- name: Install postgresql
+  become: yes
+  apt: name={{ item }} state=latest update_cache=true
+  with_items:
+    - libpq-dev
+    - python-psycopg2
+    - postgresql-{{ postgre_version }}
+    - postgresql-contrib-{{ postgre_version }}
+
+- name: listen for localhost connection
+  lineinfile: >-
+    dest='/etc/postgresql/{{ postgre_version }}/main/postgresql.conf'
+    state=present
+    backrefs=yes
+    regexp='^#?\s*listen_addresses = 'localhost''
+    line='listen_addresses = '*''
+
+- name: make public connection password check on
+  lineinfile:
+    dest: /etc/postgresql/{{ postgre_version }}/main/pg_hba.conf
+    line: host all all 0.0.0.0/0 md5
+    state: present
+
+- name: start postgresql
+  service: name=postgresql state=started enabled=yes
+
+- name: ensure postgresql is created
+  sudo_user: postgres
+  postgresql_db: name={{ deploy_app_name }}
+
+- name: ensure user has access to postgresql
+  sudo_user: postgres
+  postgresql_user: db={{ deploy_app_name }} name={{ postgre_dbuser }} password={{ postgre_dbpassword }} priv=ALL role_attr_flags=CREATEDB,CREATEROLE,REPLICATION,SUPERUSER
+  notify:
+  - restart postgresql

@@ -1,0 +1,6 @@
+.vagrant/
+nbproject/
+
+share_data/*
+!share_data/.gitkeep
+public_key
